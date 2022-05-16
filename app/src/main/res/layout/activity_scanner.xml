@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <androidx.camera.view.PreviewView
-            android:id="@+id/previewView"
+            android:id="@+id/myPreviewView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -29,6 +29,7 @@
                     android:background="@drawable/background_shape"
                     android:layout_width="300sp"
                     android:layout_height="350sp"
+                    android:id="@+id/scanImage"
                     android:layout_marginBottom="30sp">
 
                 </ImageView>

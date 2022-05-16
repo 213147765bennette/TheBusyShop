@@ -47,11 +47,19 @@ class ImageAnalyzer(
 
         for (barcodes in barcode){
             when(barcodes.valueType){
-                Barcode.TYPE_URL ->{
+                Barcode.TYPE_PRODUCT ->{
                     if(!showDialog.isAdded){
                         showDialog.show(fragmentManager, "")
                     }
                 }
+                /*Barcode.TYPE_URL ->{
+                    if(!showDialog.isAdded){
+                        showDialog.show(fragmentManager, "")
+                    }
+
+                    val title = barcodes.url!!.title
+                    val url = barcodes.url!!.url
+                }*/
 
             }
         }
