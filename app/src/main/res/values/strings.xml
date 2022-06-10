@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">BusyShop</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_dashboard">Cart</string>
+
+    <string name="dialog_delete">Delete</string>
+    <string name="dialog_delete_title">Delete Cart Item</string>
+    <string name="dialog_delete_msg">Are you sure do you want to delete this item?</string>
+    <string name="empty_list">Oops Sorry!</string>
+    <string name="empty_list_msg">Your cart is empty, kindly add items before you continue!</string>
+
+    <string name="title_notifications">Summary</string>
 </resources>

@@ -6,14 +6,14 @@
     <data>
         <variable
             name="viewmodel"
-            type="co.za.busyshop.presentation.home.HomeViewModel" />
+            type="com.ikhokha.techcheck.presentation.home.HomeViewModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.home.HomeFragment">
+        tools:context="com.ikhokha.techcheck.presentation.home.HomeFragment">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/openScanBtn"
