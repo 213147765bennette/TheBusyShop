@@ -99,7 +99,6 @@ class DashboardFragment : Fragment() {
                 isCartEmpty = false
                 Log.d(TAG,"************ ORDER ITEMS ***********: $orderItem")
 
-
                 _binding?.txtTotal?.text = "R"+calculateTotalAmount(orderItem).toString()+"0"
 
                 _binding?.txtAddMoreItem?.isVisible = true
