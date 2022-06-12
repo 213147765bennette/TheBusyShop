@@ -36,6 +36,7 @@ class ImageAnalyzer(
     private lateinit var cartEntity: CartEntity
     private var quantity: Int = 0
     private var item: ShopItem? = null
+    private var isDialogShowing:Boolean = false
     private var showDialog = ShowDialog()
 
     var fetchCount =0
@@ -84,6 +85,7 @@ class ImageAnalyzer(
 
     private fun readFirebaseData(scannedCode: String?) {
 
+        fetchCount=0
         item = ShopItem("","" ,0.0 )
         db = FirebaseDatabase.getInstance()
         dataNodeRef = db!!.getReference(scannedCode!!)
@@ -98,16 +100,30 @@ class ImageAnalyzer(
                     Log.d(TAG,"COUNT: $fetchCount")
                     if (fetchCount ==1){
 
-                        showDialog.show(fragmentManager, "")
-                        item.let {
-                            if (it != null) {
-                                Log.d(TAG,"LETS UPDATE THE UI")
-                                //showDialog.updateDialogUI(it)
+                        if (isDialogShowing){
+                            isDialogShowing=false
+                            showDialog.dismiss()
+                            showDialog.onDestroy()
+                        }else{
+                            item.let {
+                                if (it != null) {
+                                    Log.d(TAG,"LETS UPDATE THE UI")
+                                    showDialog.show(fragmentManager, "")
+                                    isDialogShowing = true
+                                    showDialog.updateDialogUI(it)
+                                }
                             }
                         }
+
                     }else
                     {
-                        Log.d(TAG,"DONT SHOW DIALOG")
+                        fetchCount=0
+                        if (isDialogShowing){
+                            Log.d(TAG,"DONT SHOW DIALOG")
+                            showDialog.dismiss()
+                            showDialog.onDestroy()
+                            //fetchCount=0
+                        }
 
                     }
 
@@ -116,7 +132,10 @@ class ImageAnalyzer(
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                //showDialog.dismiss()
+                fetchCount=0
+                showDialog.dismiss()
+                isDialogShowing = false
+                showDialog.onDestroy()
             }
         })
 

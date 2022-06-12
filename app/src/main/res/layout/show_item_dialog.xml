@@ -150,59 +150,43 @@
 
 
             <LinearLayout
+                android:id="@+id/buttons_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="3"
-                android:orientation="horizontal"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_gravity="top"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/main_viewbooking_layout"
+                android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/noBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="50sp"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="35dp"
                         android:fontFamily="sans-serif-condensed"
                         android:background="@drawable/button_corned"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:text="No"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        >
-                    </androidx.appcompat.widget.AppCompatButton>
+                       />
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/yesBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="50sp"
+                        android:layout_width="100dp"
+                        android:layout_marginStart="35dp"
+                        android:layout_height="match_parent"
                         android:fontFamily="sans-serif-condensed"
                         android:background="@drawable/button_corned"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:text="Yes"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        >
-                    </androidx.appcompat.widget.AppCompatButton>
+                       />
 
                 </LinearLayout>
 
-
-            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
     </LinearLayout>

@@ -1,7 +1,7 @@
-package com.example.arijenguserapp.data.dto
+package com.ikhokha.techcheck.data.dto
 
-import com.example.arijenguserapp.data.model.Orders
-import com.example.arijenguserapp.data.model.Person
+
+import com.ikhokha.techcheck.data.model.ShopItem
 import lombok.*
 import java.io.Serializable
 
@@ -11,8 +11,6 @@ import java.io.Serializable
 @NoArgsConstructor
 @Builder
 class OrderCreateDTO:Serializable {
-     var person: Person? =null
-     var customerOid: String? =null
-     var orders: List<Orders>? =null
+     var orders: List<ShopItem>? =null
 
 }

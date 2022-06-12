@@ -6,6 +6,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +27,9 @@ import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.databinding.ShowItemDialogBinding
 import com.ikhokha.techcheck.domain.repository.ItemsDataRepository
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.show_item_dialog.*
+import org.jsoup.Jsoup
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
@@ -49,10 +54,11 @@ class ShowDialog : DialogFragment() {
     private lateinit var addButton: AppCompatButton
     private lateinit var noButton: AppCompatButton
     private lateinit var _binding: ShowItemDialogBinding
+    private var isDialogLoaded:Boolean = false
 
     lateinit var myView:View
 
-    @SuppressLint("InflateParams")
+   /* @SuppressLint("InflateParams")
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
@@ -68,8 +74,7 @@ class ShowDialog : DialogFragment() {
         txtItemPrice = customView.findViewById<View>(R.id.txt_item_price) as TextView
 
         return builder.create()
-    }
-
+    }*/
 
 
     override fun onCreateView(
@@ -78,65 +83,83 @@ class ShowDialog : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         myView = inflater.inflate(R.layout.show_item_dialog, container, false)
+        init(myView)
         return  myView
     }
 
 
 
-     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+     /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         init(view)
         Log.d(TAG,"BINDING 22222222222")
-    }
+    }*/
 
 
+    @SuppressLint("SetTextI18n")
     private fun init(view: View) {
-
         Log.d(TAG,"BINDING 333333333333")
         addButton = view.findViewById(R.id.yesBtn)
         noButton = view.findViewById(R.id.noBtn)
 
+        txtItemDesc = view.findViewById(R.id.txt_item_description)
+        txtItemPrice = view.findViewById(R.id.txt_item_price)
+        itemImg = view.findViewById(R.id.item_image)
+
         addButton.setOnClickListener {
             //when add btn pressed, store item to the db.
+            storeItemToCart(item)
             startActivity(Intent(context,MainActivity::class.java))
         }
 
         noButton.setOnClickListener {
             //close dialog
         }
+
+        if (isDialogLoaded){
+            item = getShopItems()
+            Log.d(TAG,"Dialog ShopItem Under INIT: $item")
+            txtItemDesc.text= item?.description
+            txtItemPrice.text = "R"+item?.price.toString()
+
+            //code to load image
+            Glide.with(itemImg.context).
+            load("https://images.app.goo.gl/Lebtgxmsg1SFq5N49").
+            into(itemImg)
+        }
+
     }
 
 
+    @SuppressLint("SetTextI18n")
     fun updateDialogUI(shopItem: ShopItem){
-
-        txtItemDesc = myView.findViewById<View>(R.id.txt_item_description) as TextView
-        txtItemPrice = myView.findViewById<View>(R.id.txt_item_price) as TextView
-        itemImg = myView.findViewById<View>(R.id.item_image) as ImageView
-
-        Log.d(TAG,"Dialog ShopItem: $shopItem")
-        txtItemDesc.text= shopItem.description
-        txtItemPrice.text = shopItem.price.toString()
-
-        //code to load image
-        Glide.with(itemImg.context).
-        load("gs://the-busy-shop.appspot.com/apple.jpg").
-        into(itemImg)
-
+        item = shopItem
+        isDialogLoaded = true
+        Log.d(TAG,"Dialog ShopItem: $item")
     }
+
+    private fun getShopItems(): ShopItem? {
+        isDialogLoaded = true
+        return item
+    }
+
 
     private fun storeItemToCart(item: ShopItem?) {
 
         cartEntity = CartEntity(0L, item?.description.toString(), item!!.image.toString(),
             item.price, 1)
 
-        Log.d(TAG,"ITEM ENTITY: ${cartEntity.price}  ${cartEntity.description}")
+        //dummy data
+        /*cartEntity = CartEntity(0L, "Apple", "gs://the-busy-shop.appspot.com/apple.jpg",
+            5.00, 1)*/
+
+        Log.d(TAG,"Update shop cart: ${cartEntity.price}  ${cartEntity.description}")
 
         itemLocalRepository.insertCartItem(cartEntity)
         Toast.makeText(context,"Item added to a cart.", Toast.LENGTH_LONG).show()
 
     }
-
 
 
 }

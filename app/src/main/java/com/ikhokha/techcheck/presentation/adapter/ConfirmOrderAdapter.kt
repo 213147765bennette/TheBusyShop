@@ -18,7 +18,7 @@ import com.ikhokha.techcheck.data.response.ConfirmOrderResponse
 /**
  * Created by Bennette Molepo on 04/06/2022.
  */
-class ConfirmOrderAdapter(private val deleteClickListener: (data: CartEntity) -> Unit)
+class ConfirmOrderAdapter(var cartResponse: List<CartEntity>, private val deleteClickListener: (data: CartEntity) -> Unit)
     :  RecyclerView.Adapter<ConfirmOrderAdapter.OrderItemViewHolder>(){
 
     companion object{
@@ -57,7 +57,7 @@ class ConfirmOrderAdapter(private val deleteClickListener: (data: CartEntity) ->
     //bind my data to the holder
     override fun onBindViewHolder(holder: OrderItemViewHolder, position: Int) {
         Log.d(TAG,"=========== AM BINDING  LIST OF ORDER ITEMS TO MY VIEW ===========")
-        holder.bind(differ.currentList[position])
+        holder.bind(cartResponse[position])
     }
 
     class OrderItemViewHolder(itemView: View,

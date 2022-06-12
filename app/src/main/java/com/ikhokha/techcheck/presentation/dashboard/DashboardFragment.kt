@@ -13,11 +13,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.gson.Gson
 import com.ikhokha.techcheck.R
+import com.ikhokha.techcheck.data.dto.OrderCreateDTO
 import com.ikhokha.techcheck.data.entity.CartEntity
+import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.databinding.FragmentDashboardBinding
 import com.ikhokha.techcheck.presentation.adapter.ConfirmOrderAdapter
+import com.ikhokha.techcheck.presentation.notifications.NotificationsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,7 +42,13 @@ class DashboardFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var orderAdapter: ConfirmOrderAdapter
     private lateinit var orderItem: List<CartEntity>
+    private var orderCreateDTO: OrderCreateDTO = OrderCreateDTO()
+    private lateinit var recyclerView:RecyclerView
     private  var isCartEmpty: Boolean = true
+
+    private val linearLayoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(context)
+    }
 
     private val deleteClickListner: (data: CartEntity) ->Unit ={
         showDeleteDialog(it)
@@ -62,17 +75,31 @@ class DashboardFragment : Fragment() {
     }
 
     private fun init(view: View){
-        orderAdapter = ConfirmOrderAdapter(deleteClickListner)
+        recyclerView = view.findViewById(R.id.confirm_order_recycler_view)
+
+        orderItem = ArrayList()
+
+        orderAdapter = ConfirmOrderAdapter(orderItem,deleteClickListner)
 
         observeDeletedItems()
         observerCartItems()
 
         _binding?.btnContinue?.setOnClickListener {
+
+            //item data
+            val bundle = Bundle().apply {
+                putSerializable("order_details", orderCreateDTO)
+
+            }
+
             if (isCartEmpty){
                 Toast.makeText(context, "Your cart is empty, please add items first.", Toast.LENGTH_LONG).show()
             }else
             {
-                //transit to order summary screen
+                findNavController().navigate(
+                    R.id.action_navigation_dashboard_to_navigation_notifications,
+                    bundle
+                )
             }
 
         }
@@ -92,25 +119,47 @@ class DashboardFragment : Fragment() {
     private fun observerCartItems() {
 
         dashboardViewModel.cartItemsList.observe(viewLifecycleOwner) {
-            Log.d(TAG, "========= VIEWING LIVE DATA CART ITEMS ==========: $it")
+            Log.d(TAG, "========= VIEWING LIVE DATA CART ITEMS ==========:" +Gson().toJson(it))
 
             if (it.isNotEmpty()){
-                orderItem = it
+                val items: List<CartEntity> = it
+                orderItem = items
                 isCartEmpty = false
-                Log.d(TAG,"************ ORDER ITEMS ***********: $orderItem")
 
-                _binding?.txtTotal?.text = "R"+calculateTotalAmount(orderItem).toString()+"0"
+                _binding?.txtTotal?.text = "R"+calculateTotalAmount(items).toString()+"0"
 
-                _binding?.txtAddMoreItem?.isVisible = true
-                _binding?.addItemsSign?.isVisible = true
-
+                orderAdapter = ConfirmOrderAdapter(items,deleteClickListner)
                 orderAdapter.setList(it)
+
+                //inflate custom adapter here FOR NOW
+                recyclerView.apply {
+                    layoutManager = linearLayoutManager
+                    adapter = orderAdapter
+                }
+
+                //here making sure that the found record is displayed at the very first top
+                recyclerView.post {
+                    recyclerView.scrollToPosition(0)
+                }
+
+                Log.d(TAG,"COUNt ***********: ${orderAdapter.itemCount}")
+
+                val newList = mutableListOf<ShopItem>()
+
+                orderItem.forEach {
+                    val shopItem = ShopItem("","",0.0)
+
+                    //shopItem.quantity = it.quantity
+                    shopItem.description = it.description
+                    shopItem.price = it.price
+
+                    newList += shopItem
+                    orderCreateDTO.orders =  newList
+                }
 
             }else{
                 isCartEmpty = true
                 showEmptyCartDialog()
-                _binding?.txtAddMoreItem?.isVisible = false
-                _binding?.addItemsSign?.isVisible = false
             }
         }
 

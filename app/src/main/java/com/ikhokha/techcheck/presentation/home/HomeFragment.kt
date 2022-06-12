@@ -15,7 +15,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.ikhokha.techcheck.MainActivity
+import com.ikhokha.techcheck.R
 import com.ikhokha.techcheck.databinding.FragmentHomeBinding
 import com.ikhokha.techcheck.presentation.scan.ScannerActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +45,7 @@ class HomeFragment : Fragment() {
 
         if (ContextCompat.checkSelfPermission(
                 requireContext(), android.Manifest.permission.CAMERA
+
             )!= PackageManager.PERMISSION_GRANTED){
             askCameraPermission()
         }else{
@@ -57,6 +60,10 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //viewmodel = (activity as MainActivity).homeViewModel
+
+       /* findNavController().navigate(
+            R.id.navigation_home,
+        )*/
 
         init(view)
     }

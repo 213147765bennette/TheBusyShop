@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
  * Created by Bennette Molepo on 04/06/2022.
  */
 @Entity(tableName = "cart")
-class CartEntity (
+data class CartEntity (
     @PrimaryKey(autoGenerate = true)
     var id : Long = 0L,
     @ColumnInfo(name = "description")
