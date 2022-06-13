@@ -44,4 +44,11 @@ class ItemLocalDataSourceImpl(
     override fun getAllCartItems(): Observable<List<CartEntity>> {
         return  itemDAO.getAllCartItems()
     }
+
+    override suspend fun updateItem(cartEntity: CartEntity) {
+        //To run this in a background worker thread am using :Dispatchers.IO
+        CoroutineScope(Dispatchers.IO).launch {
+            itemDAO.updateItem(cartEntity)
+        }
+    }
 }

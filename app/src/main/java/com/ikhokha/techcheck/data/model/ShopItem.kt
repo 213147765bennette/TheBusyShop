@@ -10,6 +10,7 @@ import lombok.*
 @AllArgsConstructor
 @NoArgsConstructor
 data class ShopItem(
+    var itemCode: String? =null,
     var description: String? =null,
     var image: String? =null,
     var price: Double = 0.0,

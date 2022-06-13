@@ -35,6 +35,7 @@ class DashboardViewModel@Inject constructor(
     var loading = MutableLiveData<Boolean>()
     val cartId : MutableLiveData<Long> = MutableLiveData()
     val description : MutableLiveData<String> = MutableLiveData()
+    val itemCode : MutableLiveData<String> = MutableLiveData()
     val image : MutableLiveData<String> = MutableLiveData()
     val price : MutableLiveData<Double> = MutableLiveData()
     val quantity : MutableLiveData<Int> = MutableLiveData()
@@ -102,6 +103,7 @@ class DashboardViewModel@Inject constructor(
     private fun createDeleteCartEntity(): CartEntity{
         return CartEntity(
             id = cartId.value!!,
+            itemCode = itemCode.value.toString(),
             description = description.value.toString(),
             image = image.value.toString(),
             price = price.value?.toDouble()!!,

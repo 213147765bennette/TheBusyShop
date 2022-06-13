@@ -26,4 +26,7 @@ interface ItemDAO {
     @Query("SELECT * FROM cart")
     suspend fun getCartItems(): List<CartEntity>
 
+    @Update
+    suspend fun updateItem(cartEntity: CartEntity)
+
 }

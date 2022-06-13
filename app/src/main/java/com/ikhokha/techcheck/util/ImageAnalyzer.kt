@@ -86,7 +86,7 @@ class ImageAnalyzer(
     private fun readFirebaseData(scannedCode: String?) {
 
         fetchCount=0
-        item = ShopItem("","" ,0.0 )
+        item = ShopItem("","","" ,0.0 )
         db = FirebaseDatabase.getInstance()
         dataNodeRef = db!!.getReference(scannedCode!!)
         dataNodeRef!!.addValueEventListener(object : ValueEventListener {
@@ -95,6 +95,8 @@ class ImageAnalyzer(
                 if (dataSnapshot.exists()){
                     item = dataSnapshot.getValue(ShopItem::class.java)
                     Log.d(TAG,"Firebase ShopItem 11: $item")
+                    //set the item code here:
+                    item?.itemCode = scannedCode
 
                     fetchCount++
                     Log.d(TAG,"COUNT: $fetchCount")

@@ -11,6 +11,8 @@ import androidx.room.PrimaryKey
 data class CartEntity (
     @PrimaryKey(autoGenerate = true)
     var id : Long = 0L,
+    @ColumnInfo(name = "itemCode")
+    var itemCode: String,
     @ColumnInfo(name = "description")
     var description: String,
     @ColumnInfo(name = "image")

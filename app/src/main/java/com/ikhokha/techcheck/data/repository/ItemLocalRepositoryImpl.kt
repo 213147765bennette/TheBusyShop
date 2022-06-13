@@ -32,4 +32,8 @@ class ItemLocalRepositoryImpl(
         return itemLocalDataSource.getAllCartItems()
     }
 
+    override suspend fun updateItem(cartEntity: CartEntity) {
+        return itemLocalDataSource.updateItem(cartEntity)
+    }
+
 }

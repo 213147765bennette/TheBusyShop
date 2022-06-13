@@ -161,7 +161,7 @@ class DashboardFragment : Fragment() {
                 val newList = mutableListOf<ShopItem>()
 
                 orderItem.forEach {
-                    val shopItem = ShopItem("","",0.0)
+                    val shopItem = ShopItem("","","",0.0)
 
                     //shopItem.quantity = it.quantity
                     shopItem.description = it.description

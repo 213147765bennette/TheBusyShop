@@ -1,13 +1,8 @@
 package com.ikhokha.techcheck.presentation.scan
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +10,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.NonNull
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
@@ -27,9 +20,6 @@ import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.databinding.ShowItemDialogBinding
 import com.ikhokha.techcheck.domain.repository.ItemsDataRepository
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.show_item_dialog.*
-import org.jsoup.Jsoup
-import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
@@ -118,7 +108,10 @@ class ShowDialog : DialogFragment() {
 
     private fun storeItemToCart(item: ShopItem?) {
 
-        cartEntity = CartEntity(0L, item?.description.toString(), item!!.image.toString(),
+        //before store check if the itemcode does exist on the db,
+        // if yes then call the dbd data by that itemcode,then update the quantity
+
+        cartEntity = CartEntity(0L,item?.itemCode.toString(), item?.description.toString(), item!!.image.toString(),
             item.price, 1)
 
         Log.d(TAG,"Update shop cart: ${cartEntity.price}  ${cartEntity.description}")

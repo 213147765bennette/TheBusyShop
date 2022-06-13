@@ -14,5 +14,5 @@ interface ItemLocalDataSource {
     suspend fun deleteAll():Int
     suspend fun getCartItems(): List<CartEntity>
     fun getAllCartItems(): Observable<List<CartEntity>>
-
+    suspend fun updateItem(cartEntity: CartEntity)
 }
