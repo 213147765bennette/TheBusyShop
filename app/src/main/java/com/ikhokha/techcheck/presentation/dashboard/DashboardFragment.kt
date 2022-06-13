@@ -1,6 +1,7 @@
 package com.ikhokha.techcheck.presentation.dashboard
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.gson.Gson
+import com.ikhokha.techcheck.MainActivity
 import com.ikhokha.techcheck.R
 import com.ikhokha.techcheck.data.dto.OrderCreateDTO
 import com.ikhokha.techcheck.data.entity.CartEntity
@@ -84,6 +86,14 @@ class DashboardFragment : Fragment() {
         observeDeletedItems()
         observerCartItems()
 
+        _binding?.txtAddMoreItem?.setOnClickListener {
+
+            Log.d(TAG,"========= Going to add more items ")
+            val intent = Intent(context, MainActivity::class.java)
+            startActivity(intent)
+
+        }
+
         _binding?.btnContinue?.setOnClickListener {
 
             //item data
@@ -142,6 +152,10 @@ class DashboardFragment : Fragment() {
                     recyclerView.scrollToPosition(0)
                 }
 
+                //Add more items
+                _binding?.txtAddMoreItem?.isVisible = true
+                _binding?.addItemsSign?.isVisible = true
+
                 Log.d(TAG,"COUNt ***********: ${orderAdapter.itemCount}")
 
                 val newList = mutableListOf<ShopItem>()
@@ -160,6 +174,9 @@ class DashboardFragment : Fragment() {
             }else{
                 isCartEmpty = true
                 showEmptyCartDialog()
+                //Add more items
+                _binding?.txtAddMoreItem?.isVisible = false
+                _binding?.addItemsSign?.isVisible = false
             }
         }
 

@@ -58,25 +58,6 @@ class ShowDialog : DialogFragment() {
 
     lateinit var myView:View
 
-   /* @SuppressLint("InflateParams")
-    @NonNull
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        // Get the layout inflater
-        val inflater = requireActivity().layoutInflater
-
-        Log.d(TAG,"AlertDialog Create")
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        val customView: View = inflater.inflate(R.layout.show_item_dialog, null)
-        txtItemDesc = customView.findViewById<View>(R.id.txt_item_description) as TextView
-        txtItemPrice = customView.findViewById<View>(R.id.txt_item_price) as TextView
-
-        return builder.create()
-    }*/
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -86,16 +67,6 @@ class ShowDialog : DialogFragment() {
         init(myView)
         return  myView
     }
-
-
-
-     /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        init(view)
-        Log.d(TAG,"BINDING 22222222222")
-    }*/
-
 
     @SuppressLint("SetTextI18n")
     private fun init(view: View) {
@@ -149,10 +120,6 @@ class ShowDialog : DialogFragment() {
 
         cartEntity = CartEntity(0L, item?.description.toString(), item!!.image.toString(),
             item.price, 1)
-
-        //dummy data
-        /*cartEntity = CartEntity(0L, "Apple", "gs://the-busy-shop.appspot.com/apple.jpg",
-            5.00, 1)*/
 
         Log.d(TAG,"Update shop cart: ${cartEntity.price}  ${cartEntity.description}")
 
