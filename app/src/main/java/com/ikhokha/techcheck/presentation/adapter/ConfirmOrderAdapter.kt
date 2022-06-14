@@ -18,7 +18,9 @@ import com.ikhokha.techcheck.data.response.ConfirmOrderResponse
 /**
  * Created by Bennette Molepo on 04/06/2022.
  */
-class ConfirmOrderAdapter(var cartResponse: List<CartEntity>, private val deleteClickListener: (data: CartEntity) -> Unit)
+class ConfirmOrderAdapter(var cartResponse: List<CartEntity>,
+                          var clicklisner:RecycleViewItemClickInterface,
+                          private val deleteClickListener: (data: CartEntity) -> Unit)
     :  RecyclerView.Adapter<ConfirmOrderAdapter.OrderItemViewHolder>(){
 
     companion object{
@@ -57,7 +59,7 @@ class ConfirmOrderAdapter(var cartResponse: List<CartEntity>, private val delete
     //bind my data to the holder
     override fun onBindViewHolder(holder: OrderItemViewHolder, position: Int) {
         Log.d(TAG,"=========== AM BINDING  LIST OF ORDER ITEMS TO MY VIEW ===========")
-        holder.bind(cartResponse[position])
+        holder.bind(cartResponse[position], clicklisner)
     }
 
     class OrderItemViewHolder(itemView: View,
@@ -72,7 +74,7 @@ class ConfirmOrderAdapter(var cartResponse: List<CartEntity>, private val delete
 
 
         @SuppressLint("SetTextI18n")
-        fun bind(data: CartEntity){
+        fun bind(data: CartEntity, action:RecycleViewItemClickInterface){
 
             Log.d(TAG,"Binding data $data")
 
@@ -84,7 +86,16 @@ class ConfirmOrderAdapter(var cartResponse: List<CartEntity>, private val delete
                 deleteClickListener(data)
             }
 
+            itemView.setOnClickListener {
+                action.onItemClick(data,absoluteAdapterPosition)
+            }
+
         }
+    }
+
+    //the interface that will help me to see more details of the item clicked
+    interface RecycleViewItemClickInterface {
+        fun onItemClick(data: CartEntity, position:Int)
     }
 
 }

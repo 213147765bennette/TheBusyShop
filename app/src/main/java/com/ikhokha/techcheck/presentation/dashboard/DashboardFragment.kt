@@ -2,18 +2,18 @@ package com.ikhokha.techcheck.presentation.dashboard
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,12 +26,11 @@ import com.ikhokha.techcheck.data.entity.CartEntity
 import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.databinding.FragmentDashboardBinding
 import com.ikhokha.techcheck.presentation.adapter.ConfirmOrderAdapter
-import com.ikhokha.techcheck.presentation.notifications.NotificationsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DashboardFragment : Fragment() {
+class DashboardFragment : Fragment() , ConfirmOrderAdapter.RecycleViewItemClickInterface {
     companion object{
         private var TAG = "DashboardFragment"
     }
@@ -81,7 +80,7 @@ class DashboardFragment : Fragment() {
 
         orderItem = ArrayList()
 
-        orderAdapter = ConfirmOrderAdapter(orderItem,deleteClickListner)
+        orderAdapter = ConfirmOrderAdapter(orderItem,this, deleteClickListner)
 
         observeDeletedItems()
         observerCartItems()
@@ -138,10 +137,10 @@ class DashboardFragment : Fragment() {
 
                 _binding?.txtTotal?.text = "R"+calculateTotalAmount(items).toString()+"0"
 
-                orderAdapter = ConfirmOrderAdapter(items,deleteClickListner)
+                orderAdapter = ConfirmOrderAdapter(items,this,deleteClickListner)
                 orderAdapter.setList(it)
 
-                //inflate custom adapter here FOR NOW
+                //inflate custom adapter here
                 recyclerView.apply {
                     layoutManager = linearLayoutManager
                     adapter = orderAdapter
@@ -151,12 +150,6 @@ class DashboardFragment : Fragment() {
                 recyclerView.post {
                     recyclerView.scrollToPosition(0)
                 }
-
-                //Add more items
-                _binding?.txtAddMoreItem?.isVisible = true
-                _binding?.addItemsSign?.isVisible = true
-
-                Log.d(TAG,"COUNt ***********: ${orderAdapter.itemCount}")
 
                 val newList = mutableListOf<ShopItem>()
 
@@ -170,6 +163,10 @@ class DashboardFragment : Fragment() {
                     newList += shopItem
                     orderCreateDTO.orders =  newList
                 }
+
+                //Add more items
+                _binding?.txtAddMoreItem?.isVisible = true
+                _binding?.addItemsSign?.isVisible = true
 
             }else{
                 isCartEmpty = true
@@ -203,6 +200,7 @@ class DashboardFragment : Fragment() {
             .cancelable(false)
             .title(R.string.dialog_delete_title)
             .message(R.string.dialog_delete_msg)
+
 
         dashboardViewModel.cartId.value = data.id
 
@@ -245,8 +243,45 @@ class DashboardFragment : Fragment() {
 
     }
 
+    //show this  dialog when cart item is clicked
+    @RequiresApi(Build.VERSION_CODES.R)
+    @SuppressLint("InflateParams", "RtlHardcoded", "SetTextI18n")
+    fun showMoreInfoDialog(itemCode:String, desc:String, price:Double, quantity:Int,image:String){
+
+        val popupWindow: PopupWindow
+        val layoutInflater = LayoutInflater.from(context)
+        val view:View = layoutInflater.inflate(R.layout.item_moreinfo_layout, null)
+
+        val txtItemCode:TextView = view.findViewById(R.id.item_code)
+        val txtItemName: TextView = view.findViewById(R.id.txt_item_name)
+        val itemQuantity: TextView = view.findViewById(R.id.txt_item_quantity)
+        val txtItemPrice: TextView = view.findViewById(R.id.txt_item_price)
+        var itemImg: ImageView = view.findViewById(R.id.item_image)
+
+        txtItemCode.text = itemCode
+        txtItemName.text = "Item Name: $desc"
+        itemQuantity.text = "Quantity: $quantity"
+        txtItemPrice.text = "Price: R"+price+"0"
+        //itemImg.setImageURI("")
+
+        val width = LinearLayout.LayoutParams.MATCH_PARENT
+        val height = 350
+
+        popupWindow = PopupWindow(view, width, height, true)
+        // display the popup in the center
+        popupWindow.width
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onItemClick(data: CartEntity, position: Int) {
+        Log.d(TAG,"=========Item: ${data.description} was clicked")
+        showMoreInfoDialog(data.itemCode, data.description, data.price, data.quantity, data.image)
     }
 }

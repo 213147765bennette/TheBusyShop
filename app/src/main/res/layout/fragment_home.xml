@@ -15,6 +15,30 @@
         android:layout_height="match_parent"
         tools:context="com.ikhokha.techcheck.presentation.home.HomeFragment">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="top"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Welcome to our Busy Shop"
+                android:textStyle="normal"
+                android:textColor="@color/yellow"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/openScanBtn"
             android:layout_width="match_parent"
