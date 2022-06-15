@@ -12,7 +12,7 @@ object TodayDate {
     @RequiresApi(Build.VERSION_CODES.O)
     fun getTodayDateTime(): String {
         val now: LocalDateTime = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         return now.format(formatter)
     }
 }

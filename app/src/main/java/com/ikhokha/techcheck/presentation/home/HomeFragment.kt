@@ -58,14 +58,6 @@ class HomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //viewmodel = (activity as MainActivity).homeViewModel
-
-       /* findNavController().navigate(
-            R.id.navigation_home,
-        )*/
-
-        init(view)
     }
 
     private fun askCameraPermission() {
@@ -88,9 +80,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun init(view: View){
 
-    }
     private fun setUpControllers() {
         val openScanBtn: AppCompatButton = binding.openScanBtn
         openScanBtn.setOnClickListener {

@@ -18,7 +18,7 @@ data class CartEntity (
     @ColumnInfo(name = "image")
     var image: String,
     @ColumnInfo(name = "price")
-    val price: Double,
+    var price: Double,
     @ColumnInfo(name = "quantity")
     var quantity: Int
  )

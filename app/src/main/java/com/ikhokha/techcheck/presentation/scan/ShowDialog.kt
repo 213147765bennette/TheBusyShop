@@ -12,7 +12,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import com.ikhokha.techcheck.MainActivity
 import com.ikhokha.techcheck.R
 import com.ikhokha.techcheck.data.entity.CartEntity
@@ -20,6 +25,7 @@ import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.databinding.ShowItemDialogBinding
 import com.ikhokha.techcheck.domain.repository.ItemsDataRepository
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -36,7 +42,6 @@ class ShowDialog : DialogFragment() {
     @Inject
     lateinit var itemLocalRepository: ItemsDataRepository
     private lateinit var cartEntity: CartEntity
-    private var quantity: Int = 0
     private var item: ShopItem? = null
     private lateinit var txtItemDesc: TextView
     private lateinit var txtItemPrice:TextView
@@ -60,7 +65,6 @@ class ShowDialog : DialogFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun init(view: View) {
-        Log.d(TAG,"BINDING 333333333333")
         addButton = view.findViewById(R.id.yesBtn)
         noButton = view.findViewById(R.id.noBtn)
 
@@ -71,11 +75,12 @@ class ShowDialog : DialogFragment() {
         addButton.setOnClickListener {
             //when add btn pressed, store item to the db.
             storeItemToCart(item)
-            startActivity(Intent(context,MainActivity::class.java))
+
         }
 
         noButton.setOnClickListener {
-            //close dialog
+
+            dialog?.dismiss()
         }
 
         if (isDialogLoaded){
@@ -84,9 +89,16 @@ class ShowDialog : DialogFragment() {
             txtItemDesc.text= item?.description
             txtItemPrice.text = "R"+item?.price.toString()
 
+
+            //val storageReference = Firebase.storage.reference
+            val storage = FirebaseStorage.getInstance()
+
+            //val storageRef = storage.reference
+            val gsReference = storage.getReferenceFromUrl("gs://the-busy-shop.appspot.com/banana.jpg")
+
             //code to load image
-            Glide.with(itemImg.context).
-            load("https://images.app.goo.gl/Lebtgxmsg1SFq5N49").
+            Glide.with(requireContext()).
+            load(gsReference).
             into(itemImg)
         }
 
@@ -114,10 +126,33 @@ class ShowDialog : DialogFragment() {
         cartEntity = CartEntity(0L,item?.itemCode.toString(), item?.description.toString(), item!!.image.toString(),
             item.price, 1)
 
-        Log.d(TAG,"Update shop cart: ${cartEntity.price}  ${cartEntity.description}")
+        lifecycleScope.launch {
+            val cartList:List<CartEntity> = itemLocalRepository.getCartItems()
+            if(cartList.isNotEmpty()){
+                cartList.forEach { response ->
+                    if (response.itemCode == item.itemCode){
+                        Log.d(TAG,"Same Item:11111111")
+                        response.quantity++
+                        response.price = response.price * response.quantity
+                        itemLocalRepository.updateItem(response)
+                        Toast.makeText(context,"Updated item quantity.", Toast.LENGTH_LONG).show()
+                    }else{
+                        Log.d(TAG,"New Item:2222222222222")
+                        itemLocalRepository.insertCartItem(cartEntity)
+                        Toast.makeText(context,"Item added to a cart.", Toast.LENGTH_LONG).show()
+                    }
 
-        itemLocalRepository.insertCartItem(cartEntity)
-        Toast.makeText(context,"Item added to a cart.", Toast.LENGTH_LONG).show()
+                }
+            }else{
+                Log.d(TAG,"========LIST IS EMPTY, JUST ADD")
+                itemLocalRepository.insertCartItem(cartEntity)
+                Toast.makeText(context,"Item added to a cart.", Toast.LENGTH_LONG).show()
+            }
+
+
+        }
+
+        startActivity(Intent(context,MainActivity::class.java))
 
     }
 

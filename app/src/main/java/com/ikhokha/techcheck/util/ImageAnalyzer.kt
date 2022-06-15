@@ -8,6 +8,9 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.fragment.app.FragmentManager
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
+import com.google.firebase.storage.FirebaseStorage
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -59,14 +62,12 @@ class ImageAnalyzer(
                     image.close()
                     if(it.isSuccessful){
                             for (barcode in it.result as List<Barcode>) {
-                                Log.d(TAG,"111111111111")
-
                                 //Read data from Firebase, update UI and save it to local db and pull it inside cart
                                 readFirebaseData(barcode.rawValue)
                                 // Handle received barcodes...
                                 Toast.makeText(
                                     context,
-                                    "Value: " + barcode.rawValue,
+                                    "Item Code: " + barcode.rawValue,
                                     Toast.LENGTH_SHORT
                                 )
                                     .show()
@@ -83,10 +84,15 @@ class ImageAnalyzer(
         image.close()
     }
 
+    private fun readItemImage(){
+        val storage = FirebaseStorage.getInstance()
+        val gsReference = storage.getReferenceFromUrl("gs://the-busy-shop.appspot.com")
+
+    }
     private fun readFirebaseData(scannedCode: String?) {
 
         fetchCount=0
-        item = ShopItem("","","" ,0.0 )
+        item = ShopItem("","","" ,0,0.0 )
         db = FirebaseDatabase.getInstance()
         dataNodeRef = db!!.getReference(scannedCode!!)
         dataNodeRef!!.addValueEventListener(object : ValueEventListener {
@@ -124,7 +130,6 @@ class ImageAnalyzer(
                             Log.d(TAG,"DONT SHOW DIALOG")
                             showDialog.dismiss()
                             showDialog.onDestroy()
-                            //fetchCount=0
                         }
 
                     }

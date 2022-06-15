@@ -26,6 +26,8 @@ import com.ikhokha.techcheck.data.entity.CartEntity
 import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.databinding.FragmentDashboardBinding
 import com.ikhokha.techcheck.presentation.adapter.ConfirmOrderAdapter
+import com.ikhokha.techcheck.util.CalculateTotal
+import com.ikhokha.techcheck.util.CalculateTotal.getTotalPrice
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -135,8 +137,6 @@ class DashboardFragment : Fragment() , ConfirmOrderAdapter.RecycleViewItemClickI
                 orderItem = items
                 isCartEmpty = false
 
-                _binding?.txtTotal?.text = "R"+calculateTotalAmount(items).toString()+"0"
-
                 orderAdapter = ConfirmOrderAdapter(items,this,deleteClickListner)
                 orderAdapter.setList(it)
 
@@ -153,20 +153,23 @@ class DashboardFragment : Fragment() , ConfirmOrderAdapter.RecycleViewItemClickI
 
                 val newList = mutableListOf<ShopItem>()
 
-                orderItem.forEach {
-                    val shopItem = ShopItem("","","",0.0)
+                orderItem.forEach {response->
+                    val shopItem = ShopItem("","","",0,0.0)
 
-                    //shopItem.quantity = it.quantity
-                    shopItem.description = it.description
-                    shopItem.price = it.price
+                    shopItem.quantity = response.quantity
+                    shopItem.description = response.description
+                    shopItem.price = response.price
 
                     newList += shopItem
                     orderCreateDTO.orders =  newList
                 }
 
+                _binding?.txtTotal?.text = "R"+calculateTotalAmount(items).toString()+"0"
+
                 //Add more items
                 _binding?.txtAddMoreItem?.isVisible = true
                 _binding?.addItemsSign?.isVisible = true
+
 
             }else{
                 isCartEmpty = true
@@ -213,9 +216,6 @@ class DashboardFragment : Fragment() , ConfirmOrderAdapter.RecycleViewItemClickI
             //Delete the Cart Item record from RoomDB
             dashboardViewModel.delete()
 
-            //then refresh the total
-            //minusItemPriceFromTotal(data.price)
-
         }
 
         dialog.negativeButton {
@@ -261,6 +261,7 @@ class DashboardFragment : Fragment() , ConfirmOrderAdapter.RecycleViewItemClickI
         txtItemCode.text = itemCode
         txtItemName.text = "Item Name: $desc"
         itemQuantity.text = "Quantity: $quantity"
+        //txtItemPrice.text = "Price: "+ getTotalPrice(price, quantity)
         txtItemPrice.text = "Price: R"+price+"0"
         //itemImg.setImageURI("")
 

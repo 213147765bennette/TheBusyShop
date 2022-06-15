@@ -11,4 +11,5 @@
     <string name="empty_list_msg">Your cart is empty, kindly add items before you continue!</string>
 
     <string name="title_notifications">Summary</string>
+    <string name="empty_summary">Empty summary details,kindly add items to your cart first and proceed to check out.</string>
 </resources>

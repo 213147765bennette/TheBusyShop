@@ -13,29 +13,29 @@ import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import com.ikhokha.techcheck.R
 import com.ikhokha.techcheck.data.entity.CartEntity
+import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.data.response.ConfirmOrderResponse
+import com.ikhokha.techcheck.util.CalculateTotal
 import com.ikhokha.techcheck.util.CalculateTotal.getTotalPrice
 
 /**
  * Created by Bennette Molepo on 04/06/2022.
  */
-class ConfirmOrderAdapter(var cartResponse: List<CartEntity>,
-                          var clicklisner:RecycleViewItemClickInterface,
-                          private val deleteClickListener: (data: CartEntity) -> Unit)
-    :  RecyclerView.Adapter<ConfirmOrderAdapter.OrderItemViewHolder>(){
+class OrderSummaryAdapter(var cartResponse: List<ShopItem>)
+    :  RecyclerView.Adapter<OrderSummaryAdapter.OrderItemViewHolder>(){
 
     companion object{
-        private val  TAG ="ConfirmOrderAdapter"
+        private val  TAG ="OrderSummaryAdapter"
     }
 
     //A smart way of updating my recycleview
-    private val diffUtil = object : DiffUtil.ItemCallback<CartEntity>(){
-        override fun areItemsTheSame( oldItem: CartEntity, newItem: CartEntity): Boolean {
-            return oldItem.id == newItem.id
+    private val diffUtil = object : DiffUtil.ItemCallback<ShopItem>(){
+        override fun areItemsTheSame( oldItem: ShopItem, newItem: ShopItem): Boolean {
+            return oldItem.itemCode == newItem.itemCode
         }
 
         @SuppressLint("DiffUtilEquals")
-        override fun areContentsTheSame(oldItem: CartEntity, newItem: CartEntity): Boolean {
+        override fun areContentsTheSame(oldItem: ShopItem, newItem: ShopItem): Boolean {
             return oldItem == newItem
         }
 
@@ -45,7 +45,7 @@ class ConfirmOrderAdapter(var cartResponse: List<CartEntity>,
     //getting the list size here
     override fun getItemCount(): Int = differ.currentList.size
 
-    fun setList(itemList: List<CartEntity>){
+    fun setList(itemList: List<ShopItem>){
         differ.submitList(itemList)
     }
 
@@ -53,52 +53,35 @@ class ConfirmOrderAdapter(var cartResponse: List<CartEntity>,
     //inflating the layout that will be shown to the client on cart screen
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.my_order_cart_layout,parent,false)
-        return OrderItemViewHolder(view,deleteClickListener)
+            .inflate(R.layout.order_summary_layout,parent,false)
+        return OrderItemViewHolder(view)
     }
 
     //bind my data to the holder
     override fun onBindViewHolder(holder: OrderItemViewHolder, position: Int) {
         Log.d(TAG,"=========== AM BINDING  LIST OF ORDER ITEMS TO MY VIEW ===========")
-        holder.bind(cartResponse[position], clicklisner)
+        holder.bind(cartResponse[position])
     }
 
-    class OrderItemViewHolder(itemView: View,
-                              private val deleteClickListener: (data: CartEntity) -> Unit)
+    class OrderItemViewHolder(itemView: View)
         : RecyclerView.ViewHolder(itemView){
 
         private val txtQuantity = itemView.findViewById<TextView>(R.id.txt_quantity)
         private val txtDescription = itemView.findViewById<TextView>(R.id.txtDescription)
-        private val txtTotalAmnt = itemView.findViewById<TextView>(R.id.txt_totalAmnt)
-        //delete button
-        private val deleteButton = itemView.findViewById<ShapeableImageView>(R.id.fab_favourites)
-
+        private val txtPrice = itemView.findViewById<TextView>(R.id.txt_item_price)
 
         @SuppressLint("SetTextI18n")
-        fun bind(data: CartEntity, action:RecycleViewItemClickInterface){
+        fun bind(data: ShopItem){
 
-            Log.d(TAG,"Binding data $data")
+            Log.d(TAG,"Binding summary data $data")
 
             txtQuantity.text = data.quantity.toString()
             txtDescription.text = data.description
-            //txtTotalAmnt.text = getTotalPrice(data.price, data.quantity)
-            txtTotalAmnt.text = "R" + data.price.toString() + "0"
-
-
-            deleteButton.setOnClickListener {
-                deleteClickListener(data)
-            }
-
-            itemView.setOnClickListener {
-                action.onItemClick(data,absoluteAdapterPosition)
-            }
+            //txtPrice.text = getTotalPrice(data.price, data.quantity)
+            txtPrice.text = "R" + data.price.toString() + "0"
 
         }
     }
 
-    //the interface that will help me to see more details of the item clicked
-    interface RecycleViewItemClickInterface {
-        fun onItemClick(data: CartEntity, position:Int)
-    }
 
 }
