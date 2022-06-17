@@ -40,7 +40,7 @@ class NotificationsFragment : Fragment() {
     private lateinit var summaryAdapter: OrderSummaryAdapter
     private lateinit var orderItem: List<ShopItem>
     private lateinit var recyclerView: RecyclerView
-
+    lateinit var items: List<ShopItem>
     private val linearLayoutManager: LinearLayoutManager by lazy {
         LinearLayoutManager(context)
     }
@@ -91,23 +91,21 @@ class NotificationsFragment : Fragment() {
             binding.txtTotalPrice.text = "R"+orderTotal.toString()+"0"
             binding.txtDate.text = getTodayDateTime()
 
-            val items: List<ShopItem>? = orderCreateDTO.orders
-            if (items != null) {
-                orderItem = items
-                summaryAdapter = OrderSummaryAdapter(items)
-                summaryAdapter.setList(items)
+            items = orderCreateDTO.orders!!
 
-                //inflate custom adapter here
-                recyclerView.apply {
-                    layoutManager = linearLayoutManager
-                    adapter = summaryAdapter
-                }
+            orderItem = items
+            summaryAdapter = OrderSummaryAdapter(items)
+            summaryAdapter.setList(items)
 
-                //here making sure that the found record is displayed at the very first top
-                recyclerView.post {
-                    recyclerView.scrollToPosition(0)
-                }
+            //inflate custom adapter here
+            recyclerView.apply {
+                layoutManager = linearLayoutManager
+                adapter = summaryAdapter
+            }
 
+            //here making sure that the found record is displayed at the very first top
+            recyclerView.post {
+                recyclerView.scrollToPosition(0)
             }
 
 
@@ -127,19 +125,24 @@ class NotificationsFragment : Fragment() {
 
     }
 
+    //will need to add the HTML for sharing this content
     private fun shareReceipt(){
-        //val orderItems: String = "Order Items : ${orderCreateDTO.orders?.get(0)?.description}"
-        //val totalPrice: String = "Total Price: R$orderTotal"
-        //val orderDate: String = "Date: "+getTodayDateTime()
+        val orderDate: String = "Date: "+getTodayDateTime()
+        var itemDesc ="Item: "
         //share The receipt
+        for(i in items){
+
+            itemDesc = i.quantity.toString()+" X "+i.description.toString()+" R${i.price}"
+
+        }
+
+        val receipt = "Order Total Price: $orderTotal\n $orderDate\n$itemDesc"
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
 
-            //orderItems+"\n" +
-            /*putExtra(Intent.EXTRA_TEXT, "Thank you for shopping with us today, here is your receipt\n" +
-                    totalPrice+"\n" +
-                    orderDate)*/
-            putExtra(Intent.EXTRA_TEXT, "Thank you for shopping with us today, here is your receipt")
+            putExtra(Intent.EXTRA_TEXT,
+                "Thank you for shopping with us today, here is your receipt: $receipt"
+            )
 
             type = "text/plain"
         }
