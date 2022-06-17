@@ -45,7 +45,7 @@
             android:textAlignment="center"
             android:text="Summary"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/yellow"
             android:textSize="15sp" />
 
         <View

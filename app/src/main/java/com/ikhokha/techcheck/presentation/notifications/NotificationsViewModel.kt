@@ -1,14 +1,38 @@
 package com.ikhokha.techcheck.presentation.notifications
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.ikhokha.techcheck.domain.repository.ItemsDataRepository
+import com.ikhokha.techcheck.presentation.dashboard.DashboardViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NotificationsViewModel : ViewModel() {
+@HiltViewModel
+class NotificationsViewModel@Inject constructor(
+    private val itemLocalRepository: ItemsDataRepository
+    ) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+    companion object{
+        private var TAG = "NotificationsViewModel"
     }
-    val text: LiveData<String> = _text
+
+    fun deleteAll():Int{
+        var deleted = 0
+        viewModelScope.launch {
+            deleted =  itemLocalRepository.deleteAll()
+        }
+        return deleted
+    }
+}
+
+class NotificationsViewModelFactory(
+    private var itemLocalRepository: ItemsDataRepository
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NotificationsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return NotificationsViewModel(itemLocalRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

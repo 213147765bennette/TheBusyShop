@@ -6,28 +6,33 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.gson.Gson
 import com.ikhokha.techcheck.R
 import com.ikhokha.techcheck.data.dto.OrderCreateDTO
-import com.ikhokha.techcheck.data.entity.CartEntity
 import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.databinding.FragmentNotificationsBinding
-import com.ikhokha.techcheck.presentation.adapter.ConfirmOrderAdapter
 import com.ikhokha.techcheck.presentation.adapter.OrderSummaryAdapter
 import com.ikhokha.techcheck.util.TodayDate.getTodayDateTime
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NotificationsFragment : Fragment() {
 
     companion object{
         private var TAG = "NotificationsFragment"
     }
+
+    @Inject
+    lateinit var factory: NotificationsViewModelFactory
+    lateinit var notificationViewModel: NotificationsViewModel
 
     private var _binding: FragmentNotificationsBinding? = null
     private var orderCreateDTO: OrderCreateDTO = OrderCreateDTO()
@@ -52,6 +57,8 @@ class NotificationsFragment : Fragment() {
             ViewModelProvider(this)[NotificationsViewModel::class.java]
 
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        notificationViewModel = ViewModelProvider(this, factory)[NotificationsViewModel::class.java]
+
         val root: View = binding.root
 
         return root
@@ -114,27 +121,50 @@ class NotificationsFragment : Fragment() {
 
         _binding?.btnConfirm?.setOnClickListener {
             Log.d(TAG, "========= CONFIRMING ORDER ==========:")
-
-            //val orderItems: String = "Order Items : ${orderCreateDTO.orders?.get(0)?.description}"
-            //val totalPrice: String = "Total Price: R$orderTotal"
-            //val orderDate: String = "Date: "+getTodayDateTime()
-            //share The receipt
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-
-                //orderItems+"\n" +
-                /*putExtra(Intent.EXTRA_TEXT, "Thank you for shopping with us today, here is your receipt\n" +
-                        totalPrice+"\n" +
-                        orderDate)*/
-                putExtra(Intent.EXTRA_TEXT, "Thank you for shopping with us today, here is your receipt")
-
-                type = "text/plain"
-            }
-
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            startActivity(shareIntent)
+            showSuccessfulOrderDialog()
 
         }
+
+    }
+
+    private fun shareReceipt(){
+        //val orderItems: String = "Order Items : ${orderCreateDTO.orders?.get(0)?.description}"
+        //val totalPrice: String = "Total Price: R$orderTotal"
+        //val orderDate: String = "Date: "+getTodayDateTime()
+        //share The receipt
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+
+            //orderItems+"\n" +
+            /*putExtra(Intent.EXTRA_TEXT, "Thank you for shopping with us today, here is your receipt\n" +
+                    totalPrice+"\n" +
+                    orderDate)*/
+            putExtra(Intent.EXTRA_TEXT, "Thank you for shopping with us today, here is your receipt")
+
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
+    //show the successful dialog
+    private fun showSuccessfulOrderDialog(){
+        //remove all cart items added
+        notificationViewModel.deleteAll()
+
+        val dialog = MaterialDialog (requireContext())
+            .cornerRadius(8f)
+            .icon(R.drawable.success_one)
+            .cancelable(false)
+            .title(R.string.dialog_successful_order_title)
+            .message(R.string.dialog_successful_order_msg)
+
+        dialog.positiveButton(R.string.dialog_successful_order) {
+            shareReceipt()
+        }
+
+        dialog.show()
 
     }
 

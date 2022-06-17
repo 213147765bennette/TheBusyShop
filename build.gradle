@@ -24,7 +24,7 @@ plugins {
 ext {
 
     coroutines_version = '1.5.2-native-mt'
-    room_version = "2.4.0"
+    room_version = "2.4.2"
     material_dialog_core_version = "3.3.0"
     okhttp_bom_version = "4.9.0"
     retrofit_version = "2.9.0"

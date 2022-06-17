@@ -10,6 +10,11 @@
     <string name="empty_list">Oops Sorry!</string>
     <string name="empty_list_msg">Your cart is empty, kindly add items before you continue!</string>
 
+    <string name="dialog_successful_order">Share</string>
+    <string name="dialog_successful_order_title">Successful Order</string>
+    <string name="dialog_successful_order_msg">Thank you for placing an order with us, share your receipt by clicking the share button.</string>
+
     <string name="title_notifications">Summary</string>
     <string name="empty_summary">Empty summary details,kindly add items to your cart first and proceed to check out.</string>
+    <string name="scanned_items">The Busy Shop Scanned Items</string>
 </resources>

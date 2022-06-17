@@ -30,6 +30,7 @@ import com.ikhokha.techcheck.databinding.FragmentDashboardBinding
 import com.ikhokha.techcheck.presentation.adapter.ConfirmOrderAdapter
 import com.ikhokha.techcheck.util.CalculateTotal
 import com.ikhokha.techcheck.util.CalculateTotal.getTotalPrice
+import com.ikhokha.techcheck.util.MakeShopImagePath.getImagePath
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -263,15 +264,11 @@ class DashboardFragment : Fragment() , ConfirmOrderAdapter.RecycleViewItemClickI
         txtItemCode.text = itemCode
         txtItemName.text = "Item Name: $desc"
         itemQuantity.text = "Quantity: $quantity"
-        //txtItemPrice.text = "Price: "+ getTotalPrice(price, quantity)
         txtItemPrice.text = "Price: R"+price+"0"
-        //itemImg.setImageURI("")
 
-        //val storageReference = Firebase.storage.reference
         val storage = FirebaseStorage.getInstance()
 
-        //val storageRef = storage.reference
-        val gsReference = storage.getReferenceFromUrl("gs://the-busy-shop.appspot.com/banana.jpg")
+        val gsReference = storage.getReferenceFromUrl(getImagePath(itemCode))
 
         //code to load image
         Glide.with(this).

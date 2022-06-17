@@ -24,6 +24,7 @@ import com.ikhokha.techcheck.data.entity.CartEntity
 import com.ikhokha.techcheck.data.model.ShopItem
 import com.ikhokha.techcheck.databinding.ShowItemDialogBinding
 import com.ikhokha.techcheck.domain.repository.ItemsDataRepository
+import com.ikhokha.techcheck.util.MakeShopImagePath
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,10 +53,6 @@ class ShowDialog : DialogFragment() {
     private var isDialogLoaded:Boolean = false
     lateinit var myView:View
 
-    private val itemImageList = listOf(
-        "apple.jpg","banana.jpg","coconut.jpg","grapefruit.jpg",
-        "orange.jpg","pear.jpg","strawberry.jpg","watermelon.jpg"
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,39 +90,18 @@ class ShowDialog : DialogFragment() {
             txtItemDesc.text= item?.description
             txtItemPrice.text = "R"+item?.price.toString()
 
-
-
             val storage = FirebaseStorage.getInstance()
 
-            //val storageRef = storage.reference
-            val gsReference = storage.getReferenceFromUrl("gs://the-busy-shop.appspot.com/banana.jpg")
+            val gsReference = storage.getReferenceFromUrl(MakeShopImagePath.getImagePath(item?.itemCode.toString()))
 
             //code to load image
-            Glide.with(requireContext()).
+            Glide.with(this).
             load(gsReference).
             into(itemImg)
+
         }
 
     }
-
-    private fun setItemImageUrl(itemCode:String){
-
-    }
-
-
-    /*private fun readItemImage(){
-        //val storageReference = Firebase.storage.reference
-        val storage = FirebaseStorage.getInstance()
-        val storageReference = Firebase.storage.reference
-        //val storageRef = storage.reference
-        val gsReference = storage.getReferenceFromUrl("gs://the-busy-shop.appspot.com/banana.jpg")
-
-        gsReference.child()
-        //code to load image
-        Glide.with(requireContext()).
-        load(gsReference).
-        into(itemImg)
-    }*/
 
     @SuppressLint("SetTextI18n")
     fun updateDialogUI(shopItem: ShopItem){
