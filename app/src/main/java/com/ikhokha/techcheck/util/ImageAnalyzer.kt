@@ -84,11 +84,6 @@ class ImageAnalyzer(
         image.close()
     }
 
-    private fun readItemImage(){
-        val storage = FirebaseStorage.getInstance()
-        val gsReference = storage.getReferenceFromUrl("gs://the-busy-shop.appspot.com")
-
-    }
     private fun readFirebaseData(scannedCode: String?) {
 
         fetchCount=0

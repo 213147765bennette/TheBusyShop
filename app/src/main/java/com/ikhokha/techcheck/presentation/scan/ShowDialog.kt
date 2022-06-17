@@ -50,8 +50,12 @@ class ShowDialog : DialogFragment() {
     private lateinit var noButton: AppCompatButton
     private lateinit var _binding: ShowItemDialogBinding
     private var isDialogLoaded:Boolean = false
-
     lateinit var myView:View
+
+    private val itemImageList = listOf(
+        "apple.jpg","banana.jpg","coconut.jpg","grapefruit.jpg",
+        "orange.jpg","pear.jpg","strawberry.jpg","watermelon.jpg"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,7 +94,7 @@ class ShowDialog : DialogFragment() {
             txtItemPrice.text = "R"+item?.price.toString()
 
 
-            //val storageReference = Firebase.storage.reference
+
             val storage = FirebaseStorage.getInstance()
 
             //val storageRef = storage.reference
@@ -104,6 +108,24 @@ class ShowDialog : DialogFragment() {
 
     }
 
+    private fun setItemImageUrl(itemCode:String){
+
+    }
+
+
+    /*private fun readItemImage(){
+        //val storageReference = Firebase.storage.reference
+        val storage = FirebaseStorage.getInstance()
+        val storageReference = Firebase.storage.reference
+        //val storageRef = storage.reference
+        val gsReference = storage.getReferenceFromUrl("gs://the-busy-shop.appspot.com/banana.jpg")
+
+        gsReference.child()
+        //code to load image
+        Glide.with(requireContext()).
+        load(gsReference).
+        into(itemImg)
+    }*/
 
     @SuppressLint("SetTextI18n")
     fun updateDialogUI(shopItem: ShopItem){

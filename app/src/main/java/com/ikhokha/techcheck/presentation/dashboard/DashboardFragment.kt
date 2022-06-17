@@ -18,6 +18,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
+import com.bumptech.glide.Glide
+import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.ikhokha.techcheck.MainActivity
 import com.ikhokha.techcheck.R
@@ -256,7 +258,7 @@ class DashboardFragment : Fragment() , ConfirmOrderAdapter.RecycleViewItemClickI
         val txtItemName: TextView = view.findViewById(R.id.txt_item_name)
         val itemQuantity: TextView = view.findViewById(R.id.txt_item_quantity)
         val txtItemPrice: TextView = view.findViewById(R.id.txt_item_price)
-        var itemImg: ImageView = view.findViewById(R.id.item_image)
+        val itemImg: ImageView = view.findViewById(R.id.item_image)
 
         txtItemCode.text = itemCode
         txtItemName.text = "Item Name: $desc"
@@ -265,6 +267,18 @@ class DashboardFragment : Fragment() , ConfirmOrderAdapter.RecycleViewItemClickI
         txtItemPrice.text = "Price: R"+price+"0"
         //itemImg.setImageURI("")
 
+        //val storageReference = Firebase.storage.reference
+        val storage = FirebaseStorage.getInstance()
+
+        //val storageRef = storage.reference
+        val gsReference = storage.getReferenceFromUrl("gs://the-busy-shop.appspot.com/banana.jpg")
+
+        //code to load image
+        Glide.with(this).
+        load(gsReference).
+        into(itemImg)
+
+        ////////
         val width = LinearLayout.LayoutParams.MATCH_PARENT
         val height = 350
 
